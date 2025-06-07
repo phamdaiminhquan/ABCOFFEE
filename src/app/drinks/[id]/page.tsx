@@ -1,8 +1,6 @@
-"use client";
 import { notFound } from "next/navigation";
 import { Drink } from "@/types/drink";
 import DrinkActions from "@/components/DrinkActions";
-import { useRouter } from "next/navigation";
 
 // Dữ liệu mẫu (nên tách ra file riêng hoặc fetch từ API)
 const mockDrinks: Drink[] = [
@@ -35,13 +33,14 @@ const mockDrinks: Drink[] = [
     },
 ];
 
-export default function DrinkDetails({ params }: { params: { id: string } }) {
-    const router = useRouter();
-    const drink = mockDrinks.find((d) => d._id === params.id);
 
-    if (!drink) return notFound();
+export default async function DrinkDetails({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const drink = mockDrinks.find((d) => d._id === id);
 
-    return (
+  if (!drink) return notFound();
+
+  return (
         <div className="min-h-screen bg-gradient-to-br from-amber-50 to-amber-200 flex flex-col items-center pt-0 md:pt-5">
             <div
                 className="
@@ -54,16 +53,6 @@ export default function DrinkDetails({ params }: { params: { id: string } }) {
                     min-h-screen md:min-h-0
                 "
             >
-                {/* Nút quay lại */}
-                <button
-                    onClick={() => router.back()}
-                    className="flex items-center gap-2 text-amber-700 hover:text-amber-900 px-4 py-2 mt-2 ml-2 w-max rounded-full bg-amber-50 hover:bg-amber-100 transition text-base font-medium"
-                >
-                    <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M15 5l-7 7 7 7" />
-                    </svg>
-                    Quay lại
-                </button>
                 {/* Nội dung card */}
                 <div className="flex flex-col md:flex-row gap-6 flex-1 p-6 mb-3 md:p-0">
                     {/* Hình ảnh bên trái (trên mobile là trên) */}
